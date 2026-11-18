@@ -1,6 +1,7 @@
 from datetime import date
 from decimal import Decimal,ROUND_HALF_UP
 from collections import defaultdict
+from app.modules.m5_calculate.comp import comp_time
 
 def price(segments,holidays):
     normal_used=defaultdict(int);out=[]
@@ -20,4 +21,5 @@ def apply(state):
     holidays=set(state['parameters'].get('holidays',['2026-10-01']))
     calculations=price(state['segments'],holidays)
     total=sum((Decimal(r['amount']) for r in calculations),Decimal(0));paid=sum((Decimal(str(r['paid'])) for r in state['rows']),Decimal(0))
-    state['calculations']=calculations;state['business']={'total':str(total),'paid':str(paid),'difference':str(total-paid),'minutes':sum(r['minutes'] for r in calculations),'unit':'CNY'};return state
+    state['calculations']=calculations;state['business']={'total':str(total),'paid':str(paid),'difference':str(total-paid),'minutes':sum(r['minutes'] for r in calculations),'unit':'CNY'}
+    state['comp']=comp_time(state);return state
